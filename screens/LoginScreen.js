@@ -33,7 +33,7 @@ export default class LoginScreen extends Component {
                     firebase.auth.GoogleAuthProvider.PROVIDER_ID &&
                     providerData[i].uid === googleUser.getBasicProfile().getId()
                 ) {
-                    // We don't need to reauth the Firebase connection.
+                    
                     return true;
                 }
             }
@@ -42,18 +42,13 @@ export default class LoginScreen extends Component {
     };
 
     onSignIn = googleUser => {
-        // We need to register an Observer on Firebase Auth to make sure auth is initialized.
         var unsubscribe = firebase.auth().onAuthStateChanged(firebaseUser => {
             unsubscribe();
-            // Check if we are already signed-in Firebase with the correct user.
             if (!this.isUserEqual(googleUser, firebaseUser)) {
-                // Build Firebase credential with the Google ID token.
                 var credential = firebase.auth.GoogleAuthProvider.credential(
                     googleUser.idToken,
                     googleUser.accessToken
                 );
-
-                // Sign in with credential from the Google user.
                 firebase
                     .auth()
                     .signInWithCredential(credential)
@@ -74,12 +69,9 @@ export default class LoginScreen extends Component {
                         }
                     })
                     .catch(error => {
-                        // Handle Errors here.
                         var errorCode = error.code;
                         var errorMessage = error.message;
-                        // The email of the user's account used.
                         var email = error.email;
-                        // The firebase.auth.AuthCredential type that was used.
                         var credential = error.credential;
                         // ...
                     });
